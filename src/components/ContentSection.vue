@@ -1,66 +1,51 @@
 <template>
-    <el-table :data="tableData" class="content-section">
-        <el-table-column fixed prop="date" label="Date" width="100" />
-        <el-table-column prop="name" label="Name" width="80" />
-        <el-table-column prop="state" label="State" width="100" />
-        <el-table-column prop="city" label="City" width="110" />
-        <el-table-column prop="address" label="Address" width="300" />
-        <el-table-column prop="zip" label="Zip" width="80" />
-        <el-table-column fixed="right" label="Operations" width="120">
+    <el-table 
+    :data="tableData" 
+    class="content-section" 
+    border
+    ref="multipleTableRef"
+    @selection-change="handleSelectionChange"
+    > 
+        <el-table-column type="selection" width="55" />
+        <!-- <el-table-column prop="id" label="Id" width="100" /> -->
+        <el-table-column prop="name" label="姓名" width="80" />
+        <el-table-column prop="email" label="邮箱" width="150" />
+        <el-table-column prop="phone" label="电话" width="150" />
+        <el-table-column prop="region" label="地址" width="100" />
+        <el-table-column label="操作" width="120">
         <template #default>
-            <el-button link type="primary" size="small" @click="handleClick">Detail</el-button>
-            <el-button link type="primary" size="small">Edit</el-button>
+            <el-button link type="primary" size="small" class="red" 
+            @click="handleClick"
+            style="color:#F56C6C"
+            >删除</el-button>
+            <el-button link type="primary" size="small">编辑</el-button>
         </template>
         </el-table-column>
     </el-table>
 </template>
 <style lang="less" scoped>
 </style>
-<script setup>
-import {ref} from 'vue'
-// 数据
-const tableData = ref(
-    [
-        {
-            date: '2016-05-03',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home',
-        },
-        {
-            date: '2016-05-02',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office',
-        },
-        {
-            date: '2016-05-04',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Home',
-        },
-        {
-            date: '2016-05-01',
-            name: 'Tom',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            zip: 'CA 90036',
-            tag: 'Office',
-        },
-    ]
-)
-// 方法
-function handleClick() {
-    console.log('click');
+<script>
+import {ref, toRefs} from 'vue'
+export default {
+    props:{
+        tableData:Object
+    },
+    setup(props) {
+        // 数据
+        const {tableData} = toRefs(props)
+        const multipleSelection = ref([])
+        // 方法
+        function handleClick() {
+            console.log('click');
+        } 
+        const handleSelectionChange = (val) => {
+            multipleSelection.value = val
+            console.log(val);
+        }
+        return{
+            tableData,multipleSelection,handleClick,handleSelectionChange
+        }
+    }
 }
 </script>
