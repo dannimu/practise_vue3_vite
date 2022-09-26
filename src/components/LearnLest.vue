@@ -61,6 +61,7 @@
             </el-table-column>
         </el-table>
     </div>
+    <hr>
 </template>
 <style lang="less" scoped>
 .learn-lest{
@@ -78,47 +79,15 @@
 }
 </style>
 <script setup>
-import { ref,reactive } from 'vue'
+import { ref,reactive ,inject,onMounted} from 'vue'
+//inject方法注入  请求后端数据
+const $http = inject("$http")
+// 表格内容
+const tableData = ref([])
+
 // 变量
 // 搜索输入框
 const input = ref('')
-// 表格内容
-const tableData = reactive(
-    [
-        {
-            date: '2016-05-01',
-            name: 'Tom1',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            tag: 'Home',
-        },
-        {
-            date: '2016-05-02',
-            name: 'Tom2',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            tag: 'Office',
-        },
-        {
-            date: '2016-05-03',
-            name: 'Tom3',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            tag: 'Home',
-        },
-        {
-            date: '2016-05-04',
-            name: 'Tom4',
-            state: 'California',
-            city: 'Los Angeles',
-            address: 'No. 189, Grove St, Los Angeles',
-            tag: 'Office',
-        },
-    ]
-)
 // 多选框选中状态
 const multipleSelection = ref([])
 // 弹框展开或者关闭
@@ -139,4 +108,16 @@ function handleClick(params) {
 function handleSelectionChange(val) {
     multipleSelection.value = val
 }
+
+// 请求表格内容 (方法)
+const getData = async() =>{
+    const {data:res} = await $http.post('http://127.0.0.1:3000/yinan2',{})
+    tableData.value = res
+    console.log(res);
+}  
+
+// 调用方法
+onMounted(()=>{
+    getData()
+})
 </script>
