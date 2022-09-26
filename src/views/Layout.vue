@@ -1,5 +1,6 @@
 <template>
-    <list-exercise />
+    <!-- <list-exercise /> -->
+    <learn-lest />
 </template>
 <style lang="less" scoped>
 .app-layout{
@@ -17,5 +18,6 @@
 }
 </style>
 <script setup>
-import ListExercise from '../components/ListExercise.vue'
+// import ListExercise from '../components/ListExercise.vue'
+import LearnLest from '../components/LearnLest.vue'
 </script>
