@@ -8,6 +8,10 @@
             <!-- 弹框 -->
             <el-dialog v-model="dialogFormVisible" :title="ShippingAddress==='add'?'新增':'编辑'">
                 <el-form :model="form">
+                    <!--弹框 id -->
+                    <el-form-item label="id" :label-width="formLabelWidth">
+                        <el-input v-model="form.id" autocomplete="off" />
+                    </el-form-item>
                     <!--弹框 日期 -->
                     <el-form-item label="日期" :label-width="formLabelWidth">
                         <el-input v-model="form.date" autocomplete="off" />
@@ -26,16 +30,16 @@
                     </el-form-item>
                     <!--弹框 城市 -->
                     <el-form-item label="城市" :label-width="formLabelWidth">
-                        <el-select v-model="form.city" placeholder="北京">
-                            <el-option label="北京" value="shanghai" />
-                            <el-option label="上海" value="beijing" />
+                        <el-select v-model="form.city" placeholder="上海">
+                            <el-option label="上海" value="shanghai" />
+                            <el-option label="北京" value="beijing" />
                         </el-select>
                     </el-form-item>
                 </el-form>
                 <template #footer>
                     <span class="dialog-footer">
                         <el-button @click="dialogFormVisible = false">取消</el-button>
-                        <el-button type="primary" @click="dialogFormVisible = false">确定</el-button>
+                        <el-button type="primary" @click="addList">确定</el-button>
                     </span>
                 </template>
             </el-dialog>
@@ -48,15 +52,15 @@
         @selection-change="handleSelectionChange"
         >
             <el-table-column type="selection" width="55" />
-            <el-table-column fixed prop="date" label="日期" width="100" />
+            <el-table-column prop="date" label="日期" width="100" />
             <el-table-column prop="name" label="姓名" width="80" />
             <el-table-column prop="state" label="状态" width="120" />
             <el-table-column prop="city" label="城市" width="120" />
             <el-table-column prop="address" label="地址" width="300" />
             <el-table-column fixed="right" label="操作" width="120">
-            <template #default>
-                <el-button link type="primary" size="small" @click="handleClick" class="delete">删除</el-button>
-                <el-button link type="primary" size="small">编辑</el-button>
+            <template #default="scope">
+                <el-button link type="primary" size="small" @click.prevent="deleteRow(scope.row)" class="delete">删除</el-button>
+                <el-button link type="primary" size="small" @click="contentEdit(scope.row)">编辑</el-button>
             </template>
             </el-table-column>
         </el-table>
@@ -100,21 +104,45 @@ const formLabelWidth = ref('150px')
 const ShippingAddress = ref('add')
 
 // 方法
-// 单选删除
-function handleClick(params) {
-    console.log('click单选删除')
-}
 // 多选框
 function handleSelectionChange(val) {
     multipleSelection.value = val
 }
 
-// 请求表格内容 (方法)
+// 获取数据 (方法)
 const getData = async() =>{
-    const {data:res} = await $http.post('http://127.0.0.1:3000/yinan2',{})
+    const {data:res} = await $http.post('http://127.0.0.1:3000/list')
     tableData.value = res
-    console.log(res);
 }  
+// 修改数据
+function contentEdit(row) {
+    ShippingAddress.value = 'edit'
+    dialogFormVisible.value = true
+    form.value = row
+}
+// 新增数据
+function addList() {
+    dialogFormVisible.value = false
+    if (ShippingAddress.value === 'add') {
+        // 取Proxy里面的值
+        const aaa = {...form.value};
+        console.log('新增',aaa);
+        $http.post('http://127.0.0.1:3000/add',aaa)
+    }else if (ShippingAddress.value === 'edit') {
+        const bbbb = {...form.value};
+        console.log('编辑',bbbb);
+        $http.post('http://127.0.0.1:3000/update',bbbb)
+    }
+}
+
+// 删除数据
+function deleteRow(id) {
+    console.log(id);
+    $http.post('http://127.0.0.1:3000/delete',id)
+}
+
+
+
 
 // 调用方法
 onMounted(()=>{
